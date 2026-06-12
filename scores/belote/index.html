@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="description" content="Compteur de points pour la belote — calcul automatique, belote/rebelote, capot et litige." />
+<title>Belote</title>
+<link rel="stylesheet" href="../css/common.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <a class="back-link" href="../">←</a>
+    <h1>Belote</h1>
+    <button class="btn-reset-top" onclick="resetAll()">Réinitialiser</button>
+  </div>
+
+  <!-- SCORES -->
+  <div class="scoreboard">
+    <div class="team-card" id="card-a">
+      <div class="team-name-lbl" id="label-a">Équipe A</div>
+      <div class="team-score" id="score-a">0</div>
+      <div id="litige-badge-a" style="display:none;"><span class="litige-badge">litige en attente</span></div>
+    </div>
+    <div class="team-card" id="card-b">
+      <div class="team-name-lbl" id="label-b">Équipe B</div>
+      <div class="team-score" id="score-b">0</div>
+      <div id="litige-badge-b" style="display:none;"><span class="litige-badge">litige en attente</span></div>
+    </div>
+  </div>
+
+  <!-- SAISIE MANCHE -->
+  <div class="section">
+    <div class="section-head">Manche</div>
+
+    <!-- CAPOT -->
+    <div class="capot-toggle">
+      <div>
+        <div class="capot-toggle-label">Capot</div>
+        <div class="capot-toggle-sub">250 pts pour une équipe</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="capot-check" onchange="onCapotChange()" />
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+
+    <!-- CAPOT TEAM PICKER -->
+    <div id="capot-section" style="display:none;">
+      <div class="picker-hint">Quelle équipe fait capot ?</div>
+      <div class="team-picker">
+        <button class="team-btn" id="capot-btn-a" onclick="selectCapot('a')"></button>
+        <button class="team-btn" id="capot-btn-b" onclick="selectCapot('b')"></button>
+      </div>
+    </div>
+
+    <!-- POINTS NORMAUX -->
+    <div id="normal-section">
+      <div class="pts-block">
+        <div class="picker-hint" style="padding:0; margin-bottom:8px;">Saisir les points de :</div>
+        <div class="pts-who">
+          <button class="who-btn active" id="who-a" onclick="selectWho('a')"></button>
+          <button class="who-btn" id="who-b" onclick="selectWho('b')"></button>
+        </div>
+        <input class="pts-field" id="pts-main" type="number" min="0" max="162" placeholder="0" inputmode="numeric" oninput="calcPreview()" />
+        <div class="pts-derived" id="derived-row" style="display:none;">→ <span id="derived-team-lbl"></span> reçoit <span id="derived-val">—</span> pts</div>
+      </div>
+    </div>
+
+    <!-- BELOTE -->
+    <div class="belote-block">
+      <button class="belote-btn" id="belote-btn-a" onclick="toggleBelote('a')">
+        Belote/Rebelote<br><span class="belote-sub" id="belote-a-sub">Équipe A (+20)</span>
+      </button>
+      <button class="belote-btn" id="belote-btn-b" onclick="toggleBelote('b')">
+        Belote/Rebelote<br><span class="belote-sub" id="belote-b-sub">Équipe B (+20)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- LITIGE -->
+  <div class="litige-block" id="litige-section" style="display:none;">
+    <div class="litige-title">⚖️ Litige (81/81) — <span>qui défend ?</span></div>
+    <div class="team-picker no-pad">
+      <button class="team-btn" id="litige-btn-a" onclick="selectLitige('a')"></button>
+      <button class="team-btn" id="litige-btn-b" onclick="selectLitige('b')"></button>
+    </div>
+  </div>
+
+  <!-- TOTAUX + VALIDATION -->
+  <div class="section">
+    <div class="totaux">
+      <div class="total-card"><div class="total-lbl" id="tot-lbl-a">Manche A</div><div class="total-val" id="tot-a">—</div></div>
+      <div class="total-card"><div class="total-lbl" id="tot-lbl-b">Manche B</div><div class="total-val" id="tot-b">—</div></div>
+    </div>
+    <div class="error" id="err-msg"></div>
+    <div class="validate-block">
+      <button class="btn-valider" onclick="addRound()">Valider la manche</button>
+    </div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- HISTORIQUE -->
+  <div class="histo-section" id="history-section" style="display:none;">
+    <div class="section-head">Historique</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Manche</th>
+          <th id="th-a">A</th>
+          <th id="th-b">B</th>
+          <th id="th-ta">Total A</th>
+          <th id="th-tb">Total B</th>
+        </tr>
+      </thead>
+      <tbody id="history-body"></tbody>
+    </table>
+  </div>
+
+  <!-- CONFIG -->
+  <div class="section config-section">
+    <div class="section-head">Configuration</div>
+    <div class="config-block">
+      <div class="config-row">
+        <span class="config-label">Équipe A</span>
+        <input class="config-input" id="name-a" value="Équipe A" placeholder="Nom A" oninput="updateLabels()" />
+      </div>
+      <div class="config-row">
+        <span class="config-label">Équipe B</span>
+        <input class="config-input" id="name-b" value="Équipe B" placeholder="Nom B" oninput="updateLabels()" />
+      </div>
+      <div class="config-row">
+        <span class="config-label">Partie en</span>
+        <select class="config-input" id="target" onchange="saveState()">
+          <option value="1000" selected>1000 pts</option>
+          <option value="2000">2000 pts</option>
+          <option value="3000">3000 pts</option>
+          <option value="0">Sans limite</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="description" content="Compteurs de points pour la belote, la contrée et le tarot." />
+<title>Compteurs de points</title>
+<link rel="stylesheet" href="css/common.css" />
+</head>
+<body>
+<div class="app">
+  <div class="home-wrap">
+    <div class="home-title">🃏 Compteurs de points</div>
+    <div class="home-sub">Choisis ton jeu</div>
+
+    <a class="home-card" href="belote/">
+      <div class="home-card-title">Belote</div>
+      <div class="home-card-sub">2 équipes · capot · litige · belote/rebelote</div>
+      <span class="home-badge" id="badge-belote" style="display:none;">partie en cours</span>
+    </a>
+
+    <a class="home-card" href="contree/">
+      <div class="home-card-title">Contrée</div>
+      <div class="home-card-sub">Annonces · coinche/surcoinche · 3 modes de comptage</div>
+      <span class="home-badge" id="badge-contree" style="display:none;">partie en cours</span>
+    </a>
+
+    <a class="home-card" href="tarot/">
+      <div class="home-card-title">Tarot</div>
+      <div class="home-card-sub">3 à 5 joueurs · poignées · petit au bout · chelem</div>
+      <span class="home-badge" id="badge-tarot" style="display:none;">partie en cours</span>
+    </a>
+  </div>
+</div>
+
+<script>
+// Affiche un badge "partie en cours" si une partie est sauvegardée
+const games = [
+  { key: 'belote-state-v1', badge: 'badge-belote', test: s => (s.rounds || []).length > 0 },
+  { key: 'contree-state-v1', badge: 'badge-contree', test: s => (s.rounds || []).length > 0 },
+  { key: 'tarot-state-v1', badge: 'badge-tarot', test: s => (s.donnes || []).length > 0 }
+];
+games.forEach(g => {
+  try {
+    const raw = localStorage.getItem(g.key);
+    if (raw && g.test(JSON.parse(raw))) {
+      document.getElementById(g.badge).style.display = 'inline-block';
+    }
+  } catch (e) { /* ignore */ }
+});
+</script>
+</body>
+</html>

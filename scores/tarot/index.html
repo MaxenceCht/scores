@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>Tarot</title>
+<link rel="stylesheet" href="../css/common.css" />
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <a class="back-link" href="../">←</a>
+    <h1>Tarot</h1>
+    <button class="btn-reset-top" onclick="resetAll()">Réinitialiser</button>
+  </div>
+
+  <!-- SCORES JOUEURS -->
+  <div class="players-grid p4" id="players-grid"></div>
+
+  <!-- SAISIE DONNE -->
+  <div class="section">
+    <div class="section-head">Donne</div>
+
+    <div class="chip-label">Preneur</div>
+    <div class="chip-row" id="preneur-row"></div>
+
+    <div id="partner-block" style="display:none;">
+      <div class="chip-label">Partenaire (roi appelé)</div>
+      <div class="chip-row" id="partner-row"></div>
+    </div>
+
+    <div class="chip-label">Contrat</div>
+    <div class="chip-row">
+      <button class="chip" id="ct-1" onclick="selectContract(1)">Petite</button>
+      <button class="chip" id="ct-2" onclick="selectContract(2)">Garde</button>
+      <button class="chip" id="ct-4" onclick="selectContract(4)">Garde sans</button>
+      <button class="chip" id="ct-6" onclick="selectContract(6)">Garde contre</button>
+    </div>
+
+    <div class="chip-label">Bouts du preneur</div>
+    <div class="chip-row">
+      <button class="chip" id="bt-0" onclick="selectBouts(0)">0 <span style="font-size:11px;opacity:0.6;">(56)</span></button>
+      <button class="chip" id="bt-1" onclick="selectBouts(1)">1 <span style="font-size:11px;opacity:0.6;">(51)</span></button>
+      <button class="chip" id="bt-2" onclick="selectBouts(2)">2 <span style="font-size:11px;opacity:0.6;">(41)</span></button>
+      <button class="chip" id="bt-3" onclick="selectBouts(3)">3 <span style="font-size:11px;opacity:0.6;">(36)</span></button>
+    </div>
+
+    <div class="pts-block">
+      <div class="chip-label" style="padding-left:0;">Points du preneur (sur 91)</div>
+      <input class="pts-field" id="pts-main" type="number" min="0" max="91" step="0.5" placeholder="0" inputmode="decimal" oninput="calcPreview()" />
+    </div>
+
+    <div class="chip-label">Petit au bout</div>
+    <div class="chip-row">
+      <button class="chip active" id="pab-none" onclick="selectPab(null)">Non</button>
+      <button class="chip" id="pab-att" onclick="selectPab('att')">Attaque</button>
+      <button class="chip" id="pab-def" onclick="selectPab('def')">Défense</button>
+    </div>
+
+    <div class="chip-label">Poignée — attaque</div>
+    <div class="chip-row">
+      <button class="chip active" id="pa-0" onclick="selectPoignee('att', 0)">Aucune</button>
+      <button class="chip" id="pa-20" onclick="selectPoignee('att', 20)">Simple +20</button>
+      <button class="chip" id="pa-30" onclick="selectPoignee('att', 30)">Double +30</button>
+      <button class="chip" id="pa-40" onclick="selectPoignee('att', 40)">Triple +40</button>
+    </div>
+
+    <div class="chip-label">Poignée — défense</div>
+    <div class="chip-row">
+      <button class="chip active" id="pd-0" onclick="selectPoignee('def', 0)">Aucune</button>
+      <button class="chip" id="pd-20" onclick="selectPoignee('def', 20)">Simple +20</button>
+      <button class="chip" id="pd-30" onclick="selectPoignee('def', 30)">Double +30</button>
+      <button class="chip" id="pd-40" onclick="selectPoignee('def', 40)">Triple +40</button>
+    </div>
+
+    <div class="chip-label">Chelem</div>
+    <div class="chip-row">
+      <button class="chip active" id="ch-0" onclick="selectChelem(0)">Aucun</button>
+      <button class="chip" id="ch-200" onclick="selectChelem(200)">Non annoncé réussi +200</button>
+      <button class="chip" id="ch-400" onclick="selectChelem(400)">Annoncé réussi +400</button>
+      <button class="chip" id="ch-m200" onclick="selectChelem(-200)">Annoncé chuté −200</button>
+    </div>
+  </div>
+
+  <!-- VERDICT + PREVIEW -->
+  <div class="verdict" id="verdict" style="display:none;"></div>
+
+  <div class="section">
+    <div class="players-grid p4" id="preview-grid" style="padding-top:12px;"></div>
+    <div class="error" id="err-msg"></div>
+    <div class="validate-block">
+      <button class="btn-valider" onclick="addDonne()">Valider la donne</button>
+    </div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- HISTORIQUE -->
+  <div class="histo-section" id="history-section" style="display:none;">
+    <div class="section-head">Historique</div>
+    <div style="overflow-x:auto;">
+      <table id="histo-table">
+        <thead><tr id="histo-head"></tr></thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CONFIG -->
+  <div class="section config-section">
+    <div class="section-head">Configuration</div>
+    <div class="config-block">
+      <div class="chip-label" style="padding-left:0;">Nombre de joueurs</div>
+      <div class="chip-row" style="padding-left:0; padding-right:0;">
+        <button class="chip" id="np-3" onclick="setPlayerCount(3)">3</button>
+        <button class="chip active" id="np-4" onclick="setPlayerCount(4)">4</button>
+        <button class="chip" id="np-5" onclick="setPlayerCount(5)">5</button>
+      </div>
+      <div id="names-block"></div>
+    </div>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

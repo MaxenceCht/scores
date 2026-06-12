@@ -1,0 +1,393 @@
+/* ============================================
+   Compteur Belote — feuille de style
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #f0efeb;
+  color: #1a1a18;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+/* Centré et limité en largeur sur desktop, pleine largeur sur mobile */
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ---------- Header ---------- */
+.header {
+  background: #fff;
+  border-bottom: 1px solid #e0deda;
+  padding: 14px 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.header h1 { font-size: 17px; font-weight: 600; }
+.btn-reset-top {
+  font-size: 13px;
+  color: #A32D2D;
+  background: none;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-reset-top:active { background: #FCEBEB; }
+
+/* ---------- Scoreboard ---------- */
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 12px;
+}
+.team-card {
+  background: #fff;
+  border: 1.5px solid #e0deda;
+  border-radius: 16px;
+  padding: 14px 10px;
+  text-align: center;
+}
+.team-card.leader { border-color: #1D9E75; }
+.team-card.litige-pending { border-color: #EF9F27; }
+.team-name-lbl {
+  font-size: 11px;
+  color: #999;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.team-score { font-size: 48px; font-weight: 600; line-height: 1; }
+.team-score.leader { color: #1D9E75; }
+.litige-badge {
+  display: inline-block;
+  font-size: 10px;
+  background: #FAEEDA;
+  color: #854F0B;
+  border-radius: 6px;
+  padding: 2px 7px;
+  margin-top: 5px;
+}
+
+/* ---------- Sections ---------- */
+.section, .histo-section {
+  background: #fff;
+  margin: 0 12px 10px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.histo-section { margin-top: 10px; margin-bottom: 0; }
+.config-section { margin-top: 10px; }
+.section-head {
+  font-size: 12px;
+  font-weight: 600;
+  color: #999;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid #f0efeb;
+}
+.spacer { height: 14px; }
+.picker-hint { font-size: 13px; color: #888; padding: 0 16px 8px; }
+
+/* ---------- Capot toggle ---------- */
+.capot-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+}
+.capot-toggle-label { font-size: 16px; font-weight: 500; }
+.capot-toggle-sub { font-size: 13px; color: #999; }
+.toggle-switch { position: relative; width: 50px; height: 30px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: #ddd;
+  border-radius: 30px;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.toggle-switch input:checked + .toggle-track { background: #185FA5; }
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+.toggle-switch input:checked ~ .toggle-thumb { transform: translateX(20px); }
+
+/* ---------- Sélecteurs d'équipe (capot / litige) ---------- */
+.team-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 12px 14px;
+}
+.team-picker.no-pad { padding: 0; margin-top: 2px; }
+.team-btn {
+  height: 52px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  border: 2px solid #e0deda;
+  background: #f8f7f4;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.team-btn.selected-teal { background: #E1F5EE; border-color: #1D9E75; color: #0F6E56; }
+.team-btn.selected-amber { background: #FAEEDA; border-color: #EF9F27; color: #854F0B; }
+.team-btn:active { transform: scale(0.97); }
+
+/* ---------- Saisie des points ---------- */
+.pts-block { padding: 12px 16px 16px; }
+.pts-who { display: flex; gap: 8px; margin-bottom: 12px; }
+.who-btn {
+  flex: 1;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 14px;
+  border: 1.5px solid #e0deda;
+  background: #f8f7f4;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.who-btn.active { background: #EBF3FB; border-color: #185FA5; color: #185FA5; font-weight: 500; }
+.who-btn:active { transform: scale(0.97); }
+
+.pts-field {
+  width: 100%;
+  height: 52px;
+  border-radius: 12px;
+  border: 1.5px solid #e0deda;
+  background: #f8f7f4;
+  font-size: 22px;
+  font-weight: 500;
+  text-align: center;
+  color: #1a1a18;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+.pts-field:focus { outline: none; border-color: #185FA5; background: #fff; }
+.pts-derived { font-size: 14px; color: #999; text-align: center; margin-top: 6px; }
+.pts-derived span { color: #1a1a18; font-weight: 500; }
+
+/* ---------- Belote ---------- */
+.belote-block { display: flex; gap: 8px; padding: 0 12px 14px; }
+.belote-btn {
+  flex: 1;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 13px;
+  border: 1.5px solid #e0deda;
+  background: #f8f7f4;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1.3;
+}
+.belote-btn.active { background: #EBF3FB; border-color: #185FA5; color: #185FA5; font-weight: 500; }
+.belote-btn:active { transform: scale(0.97); }
+.belote-sub { font-size: 11px; opacity: 0.7; }
+
+/* ---------- Litige ---------- */
+.litige-block {
+  margin: 0 12px 10px;
+  background: #FAEEDA;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.litige-title { font-size: 13px; font-weight: 600; color: #854F0B; margin-bottom: 10px; }
+.litige-title span { font-weight: 400; }
+
+/* ---------- Totaux & validation ---------- */
+.totaux {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px 12px 0;
+}
+.total-card { background: #f8f7f4; border-radius: 12px; padding: 10px; text-align: center; }
+.total-lbl { font-size: 11px; color: #aaa; margin-bottom: 2px; }
+.total-val { font-size: 20px; font-weight: 600; color: #1a1a18; }
+
+.validate-block { padding: 0 12px 4px; }
+.btn-valider {
+  width: 100%;
+  height: 56px;
+  border-radius: 14px;
+  background: #185FA5;
+  color: #fff;
+  border: none;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-valider:active { background: #0C447C; transform: scale(0.98); }
+
+.error { font-size: 13px; color: #A32D2D; padding: 6px 12px 0; min-height: 24px; }
+
+/* ---------- Historique ---------- */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  color: #bbb;
+  font-weight: 500;
+  text-align: center;
+  padding: 6px 4px;
+  background: #fafaf8;
+  border-bottom: 1px solid #f0efeb;
+  font-size: 12px;
+}
+th:first-child { text-align: left; padding-left: 14px; }
+td {
+  text-align: center;
+  padding: 8px 4px;
+  border-bottom: 1px solid #f5f4f0;
+  color: #1a1a18;
+}
+td:first-child { text-align: left; padding-left: 14px; color: #999; font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+.hi { color: #1D9E75; font-weight: 600; }
+.litige-row td:first-child { color: #C08020; font-style: italic; }
+.capot-row td:first-child { color: #0F6E56; font-style: italic; }
+
+/* ---------- Configuration ---------- */
+.config-block { padding: 12px 16px; }
+.config-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0efeb;
+}
+.config-row:last-child { border-bottom: none; }
+.config-label { font-size: 15px; color: #444; }
+.config-input {
+  height: 38px;
+  border-radius: 10px;
+  border: 1.5px solid #e0deda;
+  background: #f8f7f4;
+  font-size: 15px;
+  padding: 0 10px;
+  color: #1a1a18;
+  font-family: inherit;
+  width: 130px;
+  text-align: center;
+}
+.config-input:focus { outline: none; border-color: #185FA5; background: #fff; }
+select.config-input { width: 150px; }
+
+/* ============================================
+   Ajouts communs au site multi-jeux
+   ============================================ */
+
+/* Lien retour accueil */
+.back-link { font-size: 14px; color: #185FA5; text-decoration: none; padding: 6px 8px; border-radius: 8px; }
+.back-link:active { background: #EBF3FB; }
+
+/* ---------- Accueil ---------- */
+.home-wrap { padding: 20px 16px; }
+.home-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.home-sub { font-size: 14px; color: #888; margin-bottom: 20px; }
+.home-card {
+  display: block;
+  background: #fff;
+  border: 1.5px solid #e0deda;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.1s, border-color 0.15s;
+  position: relative;
+}
+.home-card:active { transform: scale(0.98); border-color: #185FA5; }
+.home-card-title { font-size: 19px; font-weight: 600; margin-bottom: 3px; }
+.home-card-sub { font-size: 13px; color: #999; }
+.home-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #E1F5EE;
+  color: #0F6E56;
+  border-radius: 8px;
+  padding: 4px 9px;
+}
+
+/* ---------- Chips (sélections rapides) ---------- */
+.chip-row { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 16px 12px; }
+.chip {
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  border: 1.5px solid #e0deda;
+  background: #f8f7f4;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.13s;
+  font-family: inherit;
+}
+.chip:active { transform: scale(0.96); }
+.chip.active { background: #EBF3FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.chip.active-amber { background: #FAEEDA; border-color: #EF9F27; color: #854F0B; font-weight: 600; }
+.chip.active-teal { background: #E1F5EE; border-color: #1D9E75; color: #0F6E56; font-weight: 600; }
+.chip-label { font-size: 13px; color: #888; padding: 10px 16px 6px; }
+
+/* ---------- Lignes de config supplémentaires ---------- */
+.config-check { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0efeb; }
+.config-check:last-child { border-bottom: none; }
+.config-check .cfg-txt { font-size: 14px; color: #444; padding-right: 10px; }
+.config-check .cfg-sub { font-size: 12px; color: #aaa; }
+
+/* ---------- Résultat de manche (preview) ---------- */
+.verdict {
+  margin: 0 16px 10px;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+.verdict.ok { background: #E1F5EE; color: #0F6E56; }
+.verdict.ko { background: #FCEBEB; color: #A32D2D; }
+
+/* ---------- Tableau scores joueurs (tarot) ---------- */
+.players-grid { display: grid; gap: 8px; padding: 14px 12px; }
+.players-grid.p3 { grid-template-columns: repeat(3, 1fr); }
+.players-grid.p4 { grid-template-columns: repeat(4, 1fr); }
+.players-grid.p5 { grid-template-columns: repeat(5, 1fr); }
+.player-card { background: #fff; border: 1.5px solid #e0deda; border-radius: 14px; padding: 10px 4px; text-align: center; }
+.player-card.leader { border-color: #1D9E75; }
+.player-name { font-size: 11px; color: #999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+.player-pts { font-size: 22px; font-weight: 600; }
+.player-pts.pos { color: #0F6E56; }
+.player-pts.neg { color: #A32D2D; }
